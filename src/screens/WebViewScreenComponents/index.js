@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
-import styles from './styles';
+import styles from '../../styles';
 import { forwardRef } from 'react';
 
 const WebViewComponent = forwardRef((props, ref) => {

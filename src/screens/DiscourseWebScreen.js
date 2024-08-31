@@ -1,23 +1,22 @@
-// App.js
 import React, { useState, useRef } from "react";
 import {
   View,
   Text,
-  TextInput,
+  //TextInput,
   TouchableOpacity,
-  ActivityIndicator,
-  Modal,
-  Alert,
+  // ActivityIndicator,
+  // Modal,
+  // Alert,
   Share,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { PanResponder } from "react-native";
-import WebViewComponent from "./WebViewComponent";
-import styles from "./styles";
+import WebViewComponent from "./WebViewScreenComponents";
+import styles from "../styles";
 
 const HOME_URL = "https://forum.centromics.org";
 
-const App = () => {
+const DiscourseWebScreen = () => {
   const [url, setUrl] = useState(HOME_URL);
   const [prev, setPrev] = useState(false);
   const [next, setNext] = useState(false);
@@ -190,4 +189,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default DiscourseWebScreen;

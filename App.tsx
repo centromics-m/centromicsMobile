@@ -5,19 +5,19 @@ import { Assets } from "@react-navigation/elements";
 import { Asset } from "expo-asset";
 import React from "react";
 
-import App from "./src/App";
+import AppMain from "./src/AppMain";
 
 Asset.loadAsync(Assets);
 
 import { AppRegistry } from "react-native";
 import { expo } from "./app.json";
 
-AppRegistry.registerComponent(expo.name, () => App);
+AppRegistry.registerComponent(expo.name, () => AppMain);
 
 export default function AppEntry() {
   return (
     <React.StrictMode>
-      <App />
+      <AppMain />
     </React.StrictMode>
   );
 }
