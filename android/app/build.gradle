@@ -109,9 +109,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'org.centronics.app'
+    namespace 'org.centromics.app'
     defaultConfig {
-        applicationId 'org.centronics.app'
+        applicationId 'org.centromics.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

@@ -19,7 +19,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "org.centronics.app"
+      "package": "org.centromics.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"

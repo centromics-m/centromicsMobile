@@ -1,4 +1,4 @@
-package org.centronics.app
+package org.centromics.app
 
 import android.os.Build
 import android.os.Bundle
