@@ -8,8 +8,11 @@ import {ImmutableVirtualizedList} from 'react-native-immutable-list-view';
 import Components from './NotificationsScreenComponents';
 import DiscourseUtils from '../DiscourseUtils';
 import {ThemeContext} from '../ThemeContext';
-import i18n from 'i18n-js';
+import { I18n } from 'i18n-js';
 import {BottomTabBarHeightContext} from '@react-navigation/bottom-tabs';
+import { translations } from "../shared";
+
+const i18n = new I18n(translations);
 
 class NotificationsScreen extends React.Component {
   static replyTypes = [1, 2, 3, 6, 9, 11, 15, 16, 17];

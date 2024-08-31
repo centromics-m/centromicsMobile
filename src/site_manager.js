@@ -5,11 +5,11 @@ import _ from 'lodash';
 import {Alert, NativeModules, Platform} from 'react-native';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Site from './lib/site';
+import Site from './site';
 import RNKeyPair from 'react-native-key-pair';
 import DeviceInfo from 'react-native-device-info';
-import JSEncrypt from './../lib/jsencrypt';
-import randomBytes from './../lib/random-bytes';
+import JSEncrypt from './lib/jsencrypt';
+import randomBytes from './lib/random-bytes';
 import i18n from 'i18n-js';
 
 const {DiscourseKeyboardShortcuts} = NativeModules;
