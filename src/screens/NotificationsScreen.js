@@ -90,7 +90,7 @@ class NotificationsScreen extends React.Component {
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: theme.background}}>
-        <Components.NavigationBar progress={this.state.progress} />
+        {/* <Components.NavigationBar progress={this.state.progress} /> */}
 
         {this._renderListHeader()}
 

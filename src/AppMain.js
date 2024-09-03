@@ -199,12 +199,16 @@ const AppMain = (props) => {
             };
           }}
         >
-          <Stack.Screen name="Home">
+          <Stack.Screen name="Home" >
             {(props) => (
               <DiscourseWebScreen {...props} screenProps={{ ...screenProps }} />
             )}
           </Stack.Screen>
-          <Stack.Screen name="Notifications">
+          <Stack.Screen name="Notifications"
+            options={{
+              headerShown: true,
+            }}
+          >
             {(props) => (
               <Screens.Notifications {...props} screenProps={{ ...screenProps }} />
             )}
