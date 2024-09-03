@@ -16,7 +16,7 @@ import styles from "../styles";
 
 const HOME_URL = "https://forum.centromics.org";
 
-const DiscourseWebScreen = () => {
+const DiscourseWebScreen = ({navigation}) => {
   const [url, setUrl] = useState(HOME_URL);
   const [prev, setPrev] = useState(false);
   const [next, setNext] = useState(false);
@@ -108,6 +108,11 @@ const DiscourseWebScreen = () => {
     }
   };
 
+  const notificationFunction = () => {
+    console.log('notificationFunction');
+    navigation.navigate('Notifications');
+  };
+
   const increaseFontSize = () => {
     webviewRef.current.injectJavaScript(`
     var style = document.body.style;
@@ -176,9 +181,13 @@ const DiscourseWebScreen = () => {
           <Icon name="refresh" size={18} color="black" />
           <Text style={styles.iconText}>Reload</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={shareFunction} style={styles.iconButton}>
+        {/* <TouchableOpacity onPress={shareFunction} style={styles.iconButton}>
           <Icon name="share-alt" size={18} color="black" />
           <Text style={styles.iconText}>Share</Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity onPress={notificationFunction} style={styles.iconButton}>
+          <Icon name="bell" size={18} color="black" />
+          <Text style={styles.iconText}>Notifiication</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={reloadFunction} style={styles.iconButton}>
           <Icon name="gear" size={18} color="black" />

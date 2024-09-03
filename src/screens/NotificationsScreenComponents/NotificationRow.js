@@ -6,7 +6,10 @@ import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import DiscourseUtils from '../../DiscourseUtils';
 import {ThemeContext} from '../../ThemeContext';
-import i18n from 'i18n-js';
+import { I18n } from 'i18n-js';
+import { translations } from "../../shared";
+
+const i18n = new I18n(translations);
 
 class NotificationRow extends React.Component {
   render() {

@@ -20,6 +20,8 @@ class NotificationsScreen extends React.Component {
   constructor(props) {
     super(props);
 
+    console.log('NotificationsScreen');
+
     this.state = {
       progress: 0,
       renderPlaceholderOnly: true,
