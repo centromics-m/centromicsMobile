@@ -1,48 +1,48 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 0,
   },
   toolbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "white",
     padding: 1,
-    paddingLeft: 15, 
-    paddingRight: 15
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   iconButton: {
-    backgroundColor: 'transparent',
-    padding: 5, 
-    paddingTop: 10, 
+    backgroundColor: "transparent",
+    padding: 5,
+    paddingTop: 10,
     paddingBottom: 5,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   iconText: {
-    color: 'black',
-    textAlign: 'center',
+    color: "black",
+    textAlign: "center",
     fontSize: 10,
     paddingTop: 4,
-    color: 'gray'
+    color: "gray",
   },
   webviewContainer: {
     flex: 1,
-    position: 'relative',
+    position: "relative",
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 20,
   },
 });

@@ -1,38 +1,38 @@
 /* @flow */
 /* global Request */
-'use strict';
+"use strict";
 
-import {Platform} from 'react-native';
-import _ from 'lodash';
-import fetch from './lib/fetch';
+import { Platform } from "react-native";
+import _ from "lodash";
+import fetch from "./lib/fetch";
 
 class Site {
   static FIELDS = [
-    'authToken',
-    'title',
-    'description',
-    'icon',
-    'url',
-    'unreadNotifications',
-    'unreadPrivateMessages',
-    'chatNotifications',
-    'flagCount',
-    'queueCount',
-    'totalUnread',
-    'totalNew',
-    'username',
-    'hasPush',
-    'isStaff',
-    'apiVersion',
-    'lastChecked',
-    'loginRequired',
+    "authToken",
+    "title",
+    "description",
+    "icon",
+    "url",
+    "unreadNotifications",
+    "unreadPrivateMessages",
+    "chatNotifications",
+    "flagCount",
+    "queueCount",
+    "totalUnread",
+    "totalNew",
+    "username",
+    "hasPush",
+    "isStaff",
+    "apiVersion",
+    "lastChecked",
+    "loginRequired",
   ];
 
   static fromTerm(term) {
-    let url = '';
+    let url = "";
 
     term = term.trim();
-    while (term.endsWith('/')) {
+    while (term.endsWith("/")) {
       term = term.slice(0, term.length - 1);
     }
 
@@ -47,25 +47,25 @@ class Site {
 
   static fromURL(url) {
     let req = new Request(`${url}/user-api-key/new`, {
-      method: 'HEAD',
+      method: "HEAD",
     });
 
     let apiVersion;
 
     return fetch(req)
-      .then(userApiKeyResponse => {
+      .then((userApiKeyResponse) => {
         if (userApiKeyResponse.status === 404) {
-          throw 'bad api';
+          throw "bad api";
         }
 
         if (userApiKeyResponse.status !== 200) {
-          throw 'bad url';
+          throw "bad url";
         }
 
-        let version = userApiKeyResponse.headers.get('Auth-Api-Version');
+        let version = userApiKeyResponse.headers.get("Auth-Api-Version");
         apiVersion = parseInt(version, 10);
         if (apiVersion < 2) {
-          throw 'bad api';
+          throw "bad api";
         }
 
         // make sure we use the correct URL, eg: a URL could lead us to
@@ -73,15 +73,15 @@ class Site {
         // final destination and not the origin
         // we also replace any trailing slash
         url = userApiKeyResponse.url
-          .replace('/user-api-key/new', '')
-          .replace(/\/+$/, '')
-          .replace(/:\d+/, '');
+          .replace("/user-api-key/new", "")
+          .replace(/\/+$/, "")
+          .replace(/:\d+/, "");
 
-        return fetch(`${url}/site/basic-info.json`).then(basicInfoResponse =>
-          basicInfoResponse.json(),
+        return fetch(`${url}/site/basic-info.json`).then((basicInfoResponse) =>
+          basicInfoResponse.json()
         );
       })
-      .then(info => {
+      .then((info) => {
         const siteInfo = {
           url: url,
           title: info.title,
@@ -91,7 +91,7 @@ class Site {
           loginRequired: false,
         };
 
-        if ('login_required' in info) {
+        if ("login_required" in info) {
           siteInfo.loginRequired = info.login_required;
         }
 
@@ -101,7 +101,7 @@ class Site {
 
   constructor(props) {
     if (props) {
-      Site.FIELDS.forEach(prop => {
+      Site.FIELDS.forEach((prop) => {
         this[prop] = props[prop];
       });
 
@@ -114,7 +114,7 @@ class Site {
 
   addHttps(url) {
     if (!/^(f|ht)tps?:/i.test(url)) {
-      url = 'https:' + url;
+      url = "https:" + url;
     }
     return url;
   }
@@ -122,13 +122,13 @@ class Site {
   jsonApi(path, method, data) {
     console.log(`calling: ${this.url}${path}`);
 
-    method = method || 'GET';
+    method = method || "GET";
     let headers = {
-      'User-Api-Key': this.authToken,
-      'User-Agent': `Discourse ${Platform.OS} App / 1.0`,
-      'Content-Type': 'application/json',
-      'Dont-Chunk': 'true',
-      'User-Api-Client-Id': this.clientId || '',
+      "User-Api-Key": this.authToken,
+      "User-Agent": `Discourse ${Platform.OS} App / 1.0`,
+      "Content-Type": "application/json",
+      "Dont-Chunk": "true",
+      "User-Api-Client-Id": this.clientId || "",
     };
 
     if (data) {
@@ -143,7 +143,7 @@ class Site {
       });
       this._currentFetch = fetch(req);
       this._currentFetch
-        .then(r1 => {
+        .then((r1) => {
           if (r1.status === 200) {
             return r1.json();
           } else {
@@ -151,14 +151,14 @@ class Site {
             //   this.logoff();
             //   throw 'User was logged off!';
             // } else {
-            throw 'Error during fetch status code:' + r1.status;
+            throw "Error during fetch status code:" + r1.status;
             // }
           }
         })
-        .then(result => {
+        .then((result) => {
           resolve(result);
         })
-        .catch(e => {
+        .catch((e) => {
           reject(e);
         })
         .finally(() => {
@@ -186,13 +186,13 @@ class Site {
         Date.now() - this.lastChecked > timeOffset
       ) {
         Site.fromURL(this.url)
-          .then(site => {
-            console.log('fromUrl request for', this.url);
+          .then((site) => {
+            console.log("fromUrl request for", this.url);
             resolve(site);
           })
-          .catch(e => {
+          .catch((e) => {
             console.log(e);
-            reject('failure');
+            reject("failure");
           });
       } else {
         resolve(this);
@@ -201,7 +201,7 @@ class Site {
   }
 
   revokeApiKey() {
-    return this.jsonApi('/user-api-key/revoke', 'POST');
+    return this.jsonApi("/user-api-key/revoke", "POST");
   }
 
   isNew(topic) {
@@ -224,8 +224,8 @@ class Site {
     let unread = 0;
     let newTopics = 0;
 
-    _.each(this.trackingState, t => {
-      if (!t.deleted && t.archetype !== 'private_message') {
+    _.each(this.trackingState, (t) => {
+      if (!t.deleted && t.archetype !== "private_message") {
         if (this.isNew(t)) {
           newTopics++;
         } else if (this.isUnread(t)) {
@@ -253,7 +253,7 @@ class Site {
       (this.flagCount || 0);
 
     try {
-      let totals = await this.jsonApi('/notifications/totals.json');
+      let totals = await this.jsonApi("/notifications/totals.json");
       this.unreadNotifications = totals.unread_notifications || 0;
       this.unreadPrivateMessages = totals.unread_personal_messages || 0;
       this.flagCount = totals.unseen_reviewables || 0;
@@ -278,15 +278,15 @@ class Site {
       }
     } catch (error) {
       console.log(
-        `${this.url}/notifications/totals.json endpoint not available, exiting.`,
+        `${this.url}/notifications/totals.json endpoint not available, exiting.`
       );
     }
   }
 
   readNotification(notification) {
     return new Promise((resolve, reject) => {
-      this.jsonApi('/notifications/read', 'PUT', {id: notification.id})
-        .catch(e => {
+      this.jsonApi("/notifications/read", "PUT", { id: notification.id })
+        .catch((e) => {
           reject(e);
         })
         .finally(() => resolve());
@@ -294,7 +294,7 @@ class Site {
   }
 
   getSeenNotificationId() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if (!this.authToken) {
         resolve();
         return;
@@ -314,13 +314,13 @@ class Site {
   notifications(types, options) {
     if (this._loadingNotifications) {
       // avoid double json
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         let retries = 100;
         let interval = setInterval(() => {
           retries--;
           if (retries === 0 || this._notifications) {
             clearInterval(interval);
-            this.notifications(types).then(n => {
+            this.notifications(types).then((n) => {
               resolve(n);
             });
           }
@@ -328,7 +328,7 @@ class Site {
       });
     }
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if (!this.authToken) {
         resolve([]);
         return;
@@ -342,7 +342,7 @@ class Site {
         let filtered = this._notifications;
         let minId = options && options.minId;
         if (types || minId) {
-          filtered = _.filter(filtered, notification => {
+          filtered = _.filter(filtered, (notification) => {
             // for new always show unread PMs and suppress read
             if (minId) {
               if (notification.read) {
@@ -367,19 +367,19 @@ class Site {
 
       this._loadingNotifications = true;
       this.jsonApi(
-        '/notifications.json?recent=true&limit=25' +
-          (options && options.silent === false ? '' : '&silent=true'),
+        "/notifications.json?recent=true&limit=25" +
+          (options && options.silent === false ? "" : "&silent=true")
       )
-        .then(results => {
+        .then((results) => {
           this._loadingNotifications = false;
           this._notifications = (results && results.notifications) || [];
           this._seenNotificationId = results && results.seen_notification_id;
-          this.notifications(types, _.merge(options, {silent: true})).then(n =>
-            resolve(n),
+          this.notifications(types, _.merge(options, { silent: true })).then(
+            (n) => resolve(n)
           );
         })
-        .catch(e => {
-          console.log('failed to fetch notifications ' + e);
+        .catch((e) => {
+          console.log("failed to fetch notifications " + e);
           resolve([]);
         })
         .finally(() => {
@@ -390,7 +390,7 @@ class Site {
 
   toJSON() {
     let obj = {};
-    Site.FIELDS.forEach(prop => {
+    Site.FIELDS.forEach((prop) => {
       obj[prop] = this[prop];
     });
     return obj;

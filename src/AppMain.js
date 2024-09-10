@@ -29,6 +29,7 @@ import { translations } from "./shared";
 import Screens from "./screens";
 import Site from "./site";
 import SiteManager from "./site_manager";
+import { HOME_URL } from "./constants";
 
 const Stack = createStackNavigator();
 
@@ -42,7 +43,6 @@ i18n.locale = languageTag;
 i18n.fallbacks = true;
 
 const AppMain = (props) => {
-  
   const [state, setState] = useState({
     hasNotch: false,
     deviceId: null,
@@ -51,6 +51,7 @@ const AppMain = (props) => {
   });
 
   const _siteManager = useMemo(() => {
+    console.log("_siteManager init");
     return new SiteManager();
   }, []);
 
@@ -69,10 +70,12 @@ const AppMain = (props) => {
     });
 
     //console.log('theme', state.theme);
-    console.log('_siteManager1', _siteManager);
+    //console.log('_siteManager1', _siteManager);
+
+    addSite(HOME_URL);
   }, []);
 
-  console.log('_siteManager2', _siteManager);
+  //console.log('_siteManager2', _siteManager);
 
   const openUrl = (url, supportsDelegatedAuth = true) => {
     // if (Platform.OS === 'ios') {
@@ -101,11 +104,78 @@ const AppMain = (props) => {
     // }
   };
 
-  
-  const _handleOpenUrl = () => {
-    console.log('_handleOpenUrl', vent);
+  const addSite = (term, opts = {}) => {
+    console.log("site term", term);
 
-    if (event.url.startsWith('discourse://')) {
+    if (term.length === 0) {
+      return new Promise((resolve, reject) => reject());
+    }
+
+    return new Promise((resolve, reject) => {
+      Site.fromTerm(term)
+        .then((site) => {
+          if (site) {
+            if (_siteManager.exists(site)) {
+              //throw 'dupe site';
+              // NOTE: ignore
+              // TODO: 로직 개선!
+            } else {
+              _siteManager.add(site);
+
+              // if (opts.switchTabs) {
+              //   // TODO: use "Connect here?"
+              //   this.props.screenProps.openUrl(site.url);
+              // }
+              showToastPrompt();
+            }
+            //this.setState({selectionCount: this.state.selectionCount + 1});
+          }
+
+          resolve(site);
+        })
+        .catch((e) => {
+          console.log(e);
+
+          if (e === "dupe site") {
+            Alert.alert(i18n.t("term_exists", { term }));
+          } else if (e === "bad api") {
+            Alert.alert(i18n.t("incorrect_url", { term }));
+          } else {
+            Alert.alert(i18n.t("not_found", { term }));
+          }
+
+          reject("failure");
+        });
+    });
+  };
+
+  const showToastPrompt = async () => {
+    let granted = true;
+    // Android 33+ has a permission request prompt
+    // versions before that permissions is always granted
+    if (Platform.OS === "android" && Platform.Version >= 33) {
+      granted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+      );
+    }
+    showPNToast({ granted });
+  };
+
+  const showPNToast = (opts = {}) => {
+    Toast.show({
+      type: "success",
+      text1: i18n.t("site_added"),
+      text2: opts.granted ? null : i18n.t("enable_notifications"),
+      position: "bottom",
+      visibilityTime: 6000,
+      bottomOffset: 90,
+    });
+  };
+
+  const _handleOpenUrl = () => {
+    console.log("_handleOpenUrl", vent);
+
+    if (event.url.startsWith("discourse://")) {
       let params = this.parseURLparameters(event.url);
       let site = this._siteManager.activeSite;
 
@@ -161,7 +231,7 @@ const AppMain = (props) => {
       //   });
       // }
     }
-  }
+  };
 
   const _toggleTheme = (newTheme) => {
     setState({
@@ -174,7 +244,7 @@ const AppMain = (props) => {
     openUrl: this.openUrl,
     // _handleOpenUrl: this._handleOpenUrl,
     seenNotificationMap: this._seenNotificationMap,
-    setSeenNotificationMap: map => {
+    setSeenNotificationMap: (map) => {
       this._seenNotificationMap = map;
     },
     siteManager: _siteManager,
@@ -199,18 +269,22 @@ const AppMain = (props) => {
             };
           }}
         >
-          <Stack.Screen name="Home" >
+          <Stack.Screen name="Home">
             {(props) => (
               <DiscourseWebScreen {...props} screenProps={{ ...screenProps }} />
             )}
           </Stack.Screen>
-          <Stack.Screen name="Notifications"
+          <Stack.Screen
+            name="Notifications"
             options={{
               headerShown: true,
             }}
           >
             {(props) => (
-              <Screens.Notifications {...props} screenProps={{ ...screenProps }} />
+              <Screens.Notifications
+                {...props}
+                screenProps={{ ...screenProps }}
+              />
             )}
           </Stack.Screen>
           <Stack.Screen

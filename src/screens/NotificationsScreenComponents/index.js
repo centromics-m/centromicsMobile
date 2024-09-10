@@ -1,10 +1,10 @@
 /* @flow */
-'use strict';
+"use strict";
 
-import NotificationRow from './NotificationRow';
-import NavigationBar from './NavigationBar';
-import Filter from './Filter';
-import EmptyNotificationsView from './EmptyNotificationsView';
+import NotificationRow from "./NotificationRow";
+import NavigationBar from "./NavigationBar";
+import Filter from "./Filter";
+import EmptyNotificationsView from "./EmptyNotificationsView";
 
 module.exports = {
   Row: NotificationRow,

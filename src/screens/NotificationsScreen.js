@@ -1,15 +1,15 @@
 /* @flow */
-'use strict';
+"use strict";
 
-import React from 'react';
-import Immutable from 'immutable';
-import {InteractionManager, SafeAreaView, View} from 'react-native';
-import {ImmutableVirtualizedList} from 'react-native-immutable-list-view';
-import Components from './NotificationsScreenComponents';
-import DiscourseUtils from '../DiscourseUtils';
-import {ThemeContext} from '../ThemeContext';
-import { I18n } from 'i18n-js';
-import {BottomTabBarHeightContext} from '@react-navigation/bottom-tabs';
+import React from "react";
+import Immutable from "immutable";
+import { InteractionManager, SafeAreaView, View } from "react-native";
+import { ImmutableVirtualizedList } from "react-native-immutable-list-view";
+import Components from "./NotificationsScreenComponents";
+import DiscourseUtils from "../DiscourseUtils";
+import { ThemeContext } from "../ThemeContext";
+import { I18n } from "i18n-js";
+import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
 import { translations } from "../shared";
 
 const i18n = new I18n(translations);
@@ -20,7 +20,7 @@ class NotificationsScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    console.log('NotificationsScreen');
+    console.log("NotificationsScreen");
 
     this.state = {
       progress: 0,
@@ -30,12 +30,14 @@ class NotificationsScreen extends React.Component {
     };
 
     this._siteManager = this.props.screenProps.siteManager;
+    console.log("NotificationsScreen ._siteManager", this._siteManager);
+    console.log("NotificationsScreen .props", props);
 
     if (this.props.screenProps.seenNotificationMap) {
       this._seenNotificationMap = this.props.screenProps.seenNotificationMap;
       this.refresh();
     } else {
-      this._siteManager.getSeenNotificationMap().then(map => {
+      this._siteManager.getSeenNotificationMap().then((map) => {
         this._seenNotificationMap = map;
         this.props.screenProps.setSeenNotificationMap(map);
         this.refresh();
@@ -44,7 +46,7 @@ class NotificationsScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({connectedSites: this._siteManager.connectedSitesCount()});
+    this.setState({ connectedSites: this._siteManager.connectedSitesCount() });
     this._mounted = true;
 
     if (this._refreshed) {
@@ -65,7 +67,7 @@ class NotificationsScreen extends React.Component {
   removePlaceholder() {
     InteractionManager.runAfterInteractions(() => {
       this.setTimeout(() => {
-        this.setState({renderPlaceholderOnly: false});
+        this.setState({ renderPlaceholderOnly: false });
       }, 0);
     });
   }
@@ -79,9 +81,9 @@ class NotificationsScreen extends React.Component {
 
     if (this.state.renderPlaceholderOnly) {
       return (
-        <SafeAreaView style={{flex: 1, backgroundColor: theme.background}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
           <Components.NavigationBar onDidPressRightButton={() => {}} />
-          <View style={{height: 50, marginTop: 0, paddingTop: 0}}>
+          <View style={{ height: 50, marginTop: 0, paddingTop: 0 }}>
             {this._renderListHeader()}
           </View>
         </SafeAreaView>
@@ -89,7 +91,7 @@ class NotificationsScreen extends React.Component {
     }
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: theme.background}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
         {/* <Components.NavigationBar progress={this.state.progress} /> */}
 
         {this._renderListHeader()}
@@ -105,20 +107,20 @@ class NotificationsScreen extends React.Component {
     let text;
     switch (this.state.selectedIndex) {
       case 0:
-        text = i18n.t('no_new_notifications');
+        text = i18n.t("no_new_notifications");
         break;
       case 1:
-        text = i18n.t('no_replies');
+        text = i18n.t("no_replies");
         break;
       case 2:
-        text = i18n.t('no_notifications');
+        text = i18n.t("no_notifications");
         break;
       default:
-        text = '';
+        text = "";
     }
 
     if (this.state.connectedSites === 0) {
-      text = i18n.t('no_connected_sites');
+      text = i18n.t("no_connected_sites");
     }
 
     return <Components.EmptyNotificationsView text={text} />;
@@ -127,14 +129,14 @@ class NotificationsScreen extends React.Component {
   _renderList() {
     return (
       <BottomTabBarHeightContext.Consumer>
-        {tabBarHeight => (
+        {(tabBarHeight) => (
           <ImmutableVirtualizedList
-            contentContainerStyle={{paddingBottom: tabBarHeight}}
+            contentContainerStyle={{ paddingBottom: tabBarHeight }}
             enableEmptySections={true}
             immutableData={this.state.dataSource}
-            renderItem={rowData => this._renderListRow(rowData)}
-            keyExtractor={rowData => this._listIndex(rowData)}
-            ListEmptyComponent={''}
+            renderItem={(rowData) => this._renderListRow(rowData)}
+            keyExtractor={(rowData) => this._listIndex(rowData)}
+            ListEmptyComponent={""}
           />
         )}
       </BottomTabBarHeightContext.Consumer>
@@ -142,8 +144,8 @@ class NotificationsScreen extends React.Component {
   }
 
   _openNotificationForSite(notification, site) {
-    site.readNotification(notification).catch(e => {
-      console.log('failed to mark notification as read ' + e);
+    site.readNotification(notification).catch((e) => {
+      console.log("failed to mark notification as read " + e);
     });
 
     let url = DiscourseUtils.endpointForSiteNotification(site, notification);
@@ -186,9 +188,9 @@ class NotificationsScreen extends React.Component {
     return (
       <Components.Filter
         selectedIndex={this.state.selectedIndex}
-        tabs={[i18n.t('new'), i18n.t('replies'), i18n.t('all')]}
-        onChange={index => {
-          this.setState({selectedIndex: index}, () => {
+        tabs={[i18n.t("new"), i18n.t("replies"), i18n.t("all")]}
+        onChange={(index) => {
+          this.setState({ selectedIndex: index }, () => {
             this.refresh();
           });
         }}
@@ -197,9 +199,14 @@ class NotificationsScreen extends React.Component {
   }
 
   _fetchNotifications(notificationTypes, options) {
+    console.log("_fetchNotifications1");
+
     if (this._fetching) {
       return;
     }
+
+    console.log("_fetchNotifications2", this._mounted);
+
     this._fetching = true;
 
     if (this._mounted) {
@@ -214,7 +221,7 @@ class NotificationsScreen extends React.Component {
 
     this._siteManager
       .notifications(notificationTypes, options)
-      .then(notifications => {
+      .then((notifications) => {
         this._notification = notifications;
         this._refreshed = true;
 
@@ -228,7 +235,7 @@ class NotificationsScreen extends React.Component {
 
             setTimeout(() => {
               if (this._mounted) {
-                this.setState({progress: 0});
+                this.setState({ progress: 0 });
               }
             }, 400);
           }

@@ -1,11 +1,11 @@
 /* @flow */
-'use strict';
+"use strict";
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import {Text, TouchableHighlight, View} from 'react-native';
-import _ from 'lodash';
-import {ThemeContext} from '../../ThemeContext';
+import React from "react";
+import PropTypes from "prop-types";
+import { Text, TouchableHighlight, View } from "react-native";
+import _ from "lodash";
+import { ThemeContext } from "../../ThemeContext";
 
 class Filter extends React.Component {
   static propTypes = {
@@ -25,9 +25,9 @@ class Filter extends React.Component {
   render() {
     const theme = this.context;
     return (
-      <View style={{...styles.container, backgroundColor: theme.grayUILight}}>
+      <View style={{ ...styles.container, backgroundColor: theme.grayUILight }}>
         {this._renderTabs(this.props.tabs)}
-        <View style={{...styles.indicator, backgroundColor: theme.grayUI}} />
+        <View style={{ ...styles.indicator, backgroundColor: theme.grayUI }} />
       </View>
     );
   }
@@ -41,8 +41,9 @@ class Filter extends React.Component {
         <TouchableHighlight
           key={tab}
           underlayColor={theme.yellowUIFeedback}
-          style={{...styles.button, backgroundColor: theme.grayUILight}}
-          onPress={() => this.props.onChange(tabIndex)}>
+          style={{ ...styles.button, backgroundColor: theme.grayUILight }}
+          onPress={() => this.props.onChange(tabIndex)}
+        >
           <Text
             style={[
               styles.buttonText,
@@ -52,7 +53,8 @@ class Filter extends React.Component {
                   ? theme.background
                   : theme.grayUILight,
               },
-            ]}>
+            ]}
+          >
             {tab.toUpperCase()}
           </Text>
         </TouchableHighlight>
@@ -63,7 +65,7 @@ class Filter extends React.Component {
   _indicatorColor() {
     return this.state.selectedIndex.interpolate({
       inputRange: [0, 1],
-      outputRange: ['black', 'blue'],
+      outputRange: ["black", "blue"],
     });
   }
 }
@@ -72,24 +74,24 @@ Filter.contextType = ThemeContext;
 
 const styles = {
   container: {
-    width: '100%',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    flexDirection: 'row',
+    width: "100%",
+    alignItems: "flex-end",
+    justifyContent: "center",
+    flexDirection: "row",
   },
   button: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   buttonText: {
     padding: 12,
     fontSize: 14,
-    fontWeight: '500',
-    textAlign: 'center',
+    fontWeight: "500",
+    textAlign: "center",
   },
   indicator: {
     height: 3,
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     bottom: 0,
   },

@@ -1,12 +1,18 @@
 /* @flow */
-'use strict';
+"use strict";
 
-import React from 'react';
-import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import DiscourseUtils from '../../DiscourseUtils';
-import {ThemeContext} from '../../ThemeContext';
-import { I18n } from 'i18n-js';
+import React from "react";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from "react-native";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import DiscourseUtils from "../../DiscourseUtils";
+import { ThemeContext } from "../../ThemeContext";
+import { I18n } from "i18n-js";
 import { translations } from "../../shared";
 
 const i18n = new I18n(translations);
@@ -24,11 +30,15 @@ class NotificationRow extends React.Component {
       <TouchableHighlight
         style={[contentView, this._backgroundColor()]}
         underlayColor={theme.yellowUIFeedback}
-        onPress={() => this.props.onClick()}>
+        onPress={() => this.props.onClick()}
+      >
         <View style={styles.container}>
           {this._iconForNotification(this.props.notification)}
           {this._textForNotification(this.props.notification)}
-          <Image style={styles.siteIcon} source={{uri: this.props.site.icon}} />
+          <Image
+            style={styles.siteIcon}
+            source={{ uri: this.props.site.icon }}
+          />
         </View>
       </TouchableHighlight>
     );
@@ -38,7 +48,7 @@ class NotificationRow extends React.Component {
     let name = DiscourseUtils.iconNameForNotification(notification);
     let FA5types = {};
 
-    if (name === 'heart' || name === 'dot-circle' || name === 'bookmark') {
+    if (name === "heart" || name === "dot-circle" || name === "bookmark") {
       FA5types.solid = true;
     }
 
@@ -63,12 +73,12 @@ class NotificationRow extends React.Component {
     if (notification.notification_type === 5) {
       // special logic for multi like
       if (data.count === 2) {
-        displayName = i18n.t('liked_two_users', {
+        displayName = i18n.t("liked_two_users", {
           user1: displayName,
           user2: data.username2,
         });
       } else if (data.count > 2) {
-        displayName = i18n.t('liked_more', {
+        displayName = i18n.t("liked_more", {
           user1: displayName,
           user2: data.username2,
           count: data.count - 2,
@@ -104,8 +114,8 @@ class NotificationRow extends React.Component {
         innerText = (
           <Text style={textStyle}>
             {displayName}
-            <Text style={{color: theme.blueUnread}}>
-              {' '}
+            <Text style={{ color: theme.blueUnread }}>
+              {" "}
               {this.props.notification.data.topic_title}
             </Text>
           </Text>
@@ -114,7 +124,7 @@ class NotificationRow extends React.Component {
       case 12:
         innerText = (
           <Text style={textStyle}>
-            {' '}
+            {" "}
             {this.props.notification.data.badge_name}
           </Text>
         );
@@ -122,7 +132,7 @@ class NotificationRow extends React.Component {
       case 16:
         innerText = (
           <Text style={textStyle}>
-            {i18n.t('inbox_message', {
+            {i18n.t("inbox_message", {
               count: data.inbox_count,
               group_name: data.group_name,
             })}
@@ -134,8 +144,8 @@ class NotificationRow extends React.Component {
           <Text style={textStyle}>
             {displayName}
             <Text style={textStyle}>
-              {' '}
-              {i18n.t('liked', {count: data.count})}
+              {" "}
+              {i18n.t("liked", { count: data.count })}
             </Text>
           </Text>
         );
@@ -143,7 +153,7 @@ class NotificationRow extends React.Component {
       case 20:
         innerText = (
           <Text style={textStyle}>
-            {i18n.t('approved', {title: notification.fancy_title})}
+            {i18n.t("approved", { title: notification.fancy_title })}
           </Text>
         );
         break;
@@ -151,13 +161,13 @@ class NotificationRow extends React.Component {
         if (notification.fancy_title !== undefined) {
           innerText = (
             <Text style={textStyle}>
-              {i18n.t('approved', {title: notification.fancy_title})}
+              {i18n.t("approved", { title: notification.fancy_title })}
             </Text>
           );
         } else {
           innerText = (
             <Text style={textStyle}>
-              {i18n.t('approved_commits', {
+              {i18n.t("approved_commits", {
                 count: notification.data.num_approved_commits,
               })}
             </Text>
@@ -167,7 +177,7 @@ class NotificationRow extends React.Component {
       case 22:
         innerText = (
           <Text style={textStyle}>
-            {i18n.t('membership_accepted', {
+            {i18n.t("membership_accepted", {
               name: notification.data.group_name,
             })}
           </Text>
@@ -176,7 +186,7 @@ class NotificationRow extends React.Component {
       case 23:
         innerText = (
           <Text style={textStyle}>
-            {i18n.t('membership_request_consolidated', {
+            {i18n.t("membership_request_consolidated", {
               name: notification.data.group_name,
             })}
           </Text>
@@ -188,8 +198,8 @@ class NotificationRow extends React.Component {
         innerText = (
           <Text style={textStyle}>
             {displayName}
-            <Text style={{color: theme.blueUnread}}>
-              {' '}
+            <Text style={{ color: theme.blueUnread }}>
+              {" "}
               {notification.data.topic_title || notification.fancy_title}
             </Text>
           </Text>
@@ -198,7 +208,7 @@ class NotificationRow extends React.Component {
       case 26:
         innerText = (
           <Text style={textStyle}>
-            {i18n.t('votes_released', {
+            {i18n.t("votes_released", {
               description: notification.data.message,
             })}
           </Text>
@@ -207,7 +217,7 @@ class NotificationRow extends React.Component {
       case 27:
         innerText = (
           <Text style={textStyle}>
-            {i18n.t('event_reminder', {
+            {i18n.t("event_reminder", {
               title: notification.data.topic_title,
             })}
           </Text>
@@ -216,22 +226,22 @@ class NotificationRow extends React.Component {
       case 29:
         innerText = (
           <Text style={textStyle}>
-            {i18n.t('chat_mention', {
+            {i18n.t("chat_mention", {
               name: notification.data.mentioned_by_username,
             })}
           </Text>
         );
         break;
       case 30:
-        innerText = <Text style={textStyle}>{i18n.t('chat_message')}</Text>;
+        innerText = <Text style={textStyle}>{i18n.t("chat_message")}</Text>;
         break;
       case 31:
-        innerText = <Text style={textStyle}>{i18n.t('chat_invitation')}</Text>;
+        innerText = <Text style={textStyle}>{i18n.t("chat_invitation")}</Text>;
         break;
       case 32:
         innerText = (
           <Text style={textStyle}>
-            {i18n.t('chat_group_mention', {
+            {i18n.t("chat_group_mention", {
               username: notification.data.mentioned_by_username,
               group_name: notification.data.group_name,
             })}
@@ -239,14 +249,14 @@ class NotificationRow extends React.Component {
         );
         break;
       case 37:
-        innerText = <Text style={textStyle}>{i18n.t('new_features')}</Text>;
+        innerText = <Text style={textStyle}>{i18n.t("new_features")}</Text>;
         break;
       case 34:
         innerText = (
           <Text style={textStyle}>
             {notification.data.display_username}
-            <Text style={{color: theme.blueUnread}}>
-              {' '}
+            <Text style={{ color: theme.blueUnread }}>
+              {" "}
               {notification.data.topic_title || notification.fancy_title}
             </Text>
           </Text>
@@ -255,7 +265,7 @@ class NotificationRow extends React.Component {
       case 800:
         innerText = (
           <Text style={textStyle}>
-            {i18n.t('user_following', {
+            {i18n.t("user_following", {
               name: notification.data.display_username,
             })}
           </Text>
@@ -263,7 +273,7 @@ class NotificationRow extends React.Component {
         break;
 
       default:
-        console.log('Couldn’t generate text for notification', notification);
+        console.log("Couldn’t generate text for notification", notification);
         innerText = (
           <Text style={textStyle}>
             Unmapped type: {notification.notification_type}
@@ -278,9 +288,9 @@ class NotificationRow extends React.Component {
     const theme = this.context;
     let read = this.props.notification.read;
     if (read) {
-      return {backgroundColor: theme.background};
+      return { backgroundColor: theme.background };
     } else {
-      return {backgroundColor: theme.grayBackground};
+      return { backgroundColor: theme.grayBackground };
     }
   }
 }
@@ -290,24 +300,24 @@ NotificationRow.contextType = ThemeContext;
 const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
-    flexDirection: 'column',
-    alignSelf: 'center',
+    flexDirection: "column",
+    alignSelf: "center",
     fontSize: 15,
   },
   container: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     margin: 12,
   },
   siteIcon: {
     width: 32,
     height: 32,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginLeft: 12,
     borderRadius: 12,
   },
   notificationIcon: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginRight: 12,
     marginLeft: 6,
   },

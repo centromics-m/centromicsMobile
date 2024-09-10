@@ -13,10 +13,9 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { PanResponder } from "react-native";
 import WebViewComponent from "./WebViewScreenComponents";
 import styles from "../styles";
+import { HOME_URL } from "../constants";
 
-const HOME_URL = "https://forum.centromics.org";
-
-const DiscourseWebScreen = ({navigation}) => {
+const DiscourseWebScreen = ({ navigation }) => {
   const [url, setUrl] = useState(HOME_URL);
   const [prev, setPrev] = useState(false);
   const [next, setNext] = useState(false);
@@ -109,8 +108,8 @@ const DiscourseWebScreen = ({navigation}) => {
   };
 
   const notificationFunction = () => {
-    console.log('notificationFunction');
-    navigation.navigate('Notifications');
+    console.log("notificationFunction");
+    navigation.navigate("Notifications");
   };
 
   const increaseFontSize = () => {
@@ -185,7 +184,10 @@ const DiscourseWebScreen = ({navigation}) => {
           <Icon name="share-alt" size={18} color="black" />
           <Text style={styles.iconText}>Share</Text>
         </TouchableOpacity> */}
-        <TouchableOpacity onPress={notificationFunction} style={styles.iconButton}>
+        <TouchableOpacity
+          onPress={notificationFunction}
+          style={styles.iconButton}
+        >
           <Icon name="bell" size={18} color="black" />
           <Text style={styles.iconText}>Notifiication</Text>
         </TouchableOpacity>

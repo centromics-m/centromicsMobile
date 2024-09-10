@@ -1,11 +1,11 @@
 /* @flow */
-'use strict';
+"use strict";
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import {View} from 'react-native';
-import SegmentedControl from '@react-native-community/segmented-control';
-import {ThemeContext} from '../../ThemeContext';
+import React from "react";
+import PropTypes from "prop-types";
+import { View } from "react-native";
+import SegmentedControl from "@react-native-community/segmented-control";
+import { ThemeContext } from "../../ThemeContext";
 
 class Filter extends React.Component {
   static propTypes = {
@@ -16,12 +16,12 @@ class Filter extends React.Component {
   render() {
     const theme = this.context;
     return (
-      <View style={{flex: 0, backgroundColor: theme.background}}>
+      <View style={{ flex: 0, backgroundColor: theme.background }}>
         <SegmentedControl
           values={this.props.tabs}
-          style={{margin: 12}}
+          style={{ margin: 12 }}
           selectedIndex={this.props.selectedIndex}
-          onChange={event => {
+          onChange={(event) => {
             this.props.onChange(event.nativeEvent.selectedSegmentIndex);
           }}
         />

@@ -1,18 +1,18 @@
 /* @flow */
-'use strict';
+"use strict";
 
-import _ from 'lodash';
-import {Alert, NativeModules, Platform} from 'react-native';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Site from './site';
-import RNKeyPair from 'react-native-key-pair';
-import DeviceInfo from 'react-native-device-info';
-import JSEncrypt from './lib/jsencrypt';
-import randomBytes from './lib/random-bytes';
-import i18n from 'i18n-js';
+import _ from "lodash";
+import { Alert, NativeModules, Platform } from "react-native";
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Site from "./site";
+import RNKeyPair from "react-native-key-pair";
+import DeviceInfo from "react-native-device-info";
+import JSEncrypt from "./lib/jsencrypt";
+import randomBytes from "./lib/random-bytes";
+import i18n from "i18n-js";
 
-const {DiscourseKeyboardShortcuts} = NativeModules;
+const { DiscourseKeyboardShortcuts } = NativeModules;
 const REFRESH_THROTTLE_MS = 5000;
 
 class SiteManager {
@@ -20,25 +20,25 @@ class SiteManager {
   _subscribers = [];
   sites = [];
   activeSite = null;
-  urlScheme = 'discourse://auth_redirect';
-  deviceName = 'Discourse - Unknown Mobile Device';
+  urlScheme = "discourse://auth_redirect";
+  deviceName = "Discourse - Unknown Mobile Device";
 
   constructor() {
     this.load();
 
-    AsyncStorage.getItem('@Discourse.lastRefresh').then(date => {
+    AsyncStorage.getItem("@Discourse.lastRefresh").then((date) => {
       if (date) {
         this.lastRefresh = new Date(date);
       }
     });
 
-    DeviceInfo.getDeviceName().then(name => {
+    DeviceInfo.getDeviceName().then((name) => {
       this.deviceName = `Discourse - ${name}`;
     });
   }
 
   exists(site) {
-    return !!_.find(this.sites, {url: site.url});
+    return !!_.find(this.sites, { url: site.url });
   }
 
   add(site) {
@@ -55,7 +55,7 @@ class SiteManager {
     let index = this.sites.indexOf(site);
     if (index >= 0) {
       let removableSite = this.sites.splice(index, 1)[0];
-      removableSite.revokeApiKey().catch(e => {
+      removableSite.revokeApiKey().catch((e) => {
         console.log(`Failed to revoke API Key ${e}`);
       });
       this.save();
@@ -65,24 +65,24 @@ class SiteManager {
 
   setActiveSite(site) {
     return new Promise((resolve, reject) => {
-      if (typeof site === 'string' || site instanceof String) {
+      if (typeof site === "string" || site instanceof String) {
         let url = site;
-        AsyncStorage.getItem('@Discourse.sites').then(json => {
+        AsyncStorage.getItem("@Discourse.sites").then((json) => {
           let activeSite = null;
           if (json) {
-            let tSites = JSON.parse(json).map(obj => {
+            let tSites = JSON.parse(json).map((obj) => {
               return new Site(obj);
             });
 
-            activeSite = tSites.find(s => url.startsWith(s.url) === true);
+            activeSite = tSites.find((s) => url.startsWith(s.url) === true);
             this.activeSite = activeSite;
           }
 
-          resolve({activeSite: activeSite});
+          resolve({ activeSite: activeSite });
         });
       } else {
         this.activeSite = site;
-        resolve({activeSite: site});
+        resolve({ activeSite: site });
         return;
       }
     });
@@ -95,8 +95,10 @@ class SiteManager {
   }
 
   updateNativeMenu() {
-    if (Platform.OS === 'ios') {
-      const siteLabels = this.sites.map(s => s.url.replace(/^https?:\/\//, ''));
+    if (Platform.OS === "ios") {
+      const siteLabels = this.sites.map((s) =>
+        s.url.replace(/^https?:\/\//, "")
+      );
       DiscourseKeyboardShortcuts.updateFileMenu(siteLabels);
     }
   }
@@ -113,8 +115,8 @@ class SiteManager {
   }
 
   updateUnreadBadge() {
-    if (Platform.OS === 'ios') {
-      PushNotificationIOS.checkPermissions(p => {
+    if (Platform.OS === "ios") {
+      PushNotificationIOS.checkPermissions((p) => {
         if (p.badge) {
           PushNotificationIOS.setApplicationIconBadgeNumber(this.totalUnread());
         }
@@ -123,7 +125,7 @@ class SiteManager {
   }
 
   save() {
-    AsyncStorage.setItem('@Discourse.sites', JSON.stringify(this.sites));
+    AsyncStorage.setItem("@Discourse.sites", JSON.stringify(this.sites));
     this._onChange();
     this.updateUnreadBadge();
   }
@@ -135,16 +137,16 @@ class SiteManager {
         return;
       }
 
-      AsyncStorage.getItem('@Discourse.rsaKeys').then(json => {
+      AsyncStorage.getItem("@Discourse.rsaKeys").then((json) => {
         if (json) {
           this.rsaKeys = JSON.parse(json);
           resolve();
         } else {
-          RNKeyPair.generate(pair => {
+          RNKeyPair.generate((pair) => {
             this.rsaKeys = pair;
             AsyncStorage.setItem(
-              '@Discourse.rsaKeys',
-              JSON.stringify(this.rsaKeys),
+              "@Discourse.rsaKeys",
+              JSON.stringify(this.rsaKeys)
             );
             resolve();
           });
@@ -162,10 +164,10 @@ class SiteManager {
     this.ensureRSAKeys();
     this._loading = true;
 
-    AsyncStorage.getItem('@Discourse.sites')
-      .then(json => {
+    AsyncStorage.getItem("@Discourse.sites")
+      .then((json) => {
         if (json) {
-          this.sites = JSON.parse(json).map(obj => {
+          this.sites = JSON.parse(json).map((obj) => {
             return new Site(obj);
           });
 
@@ -174,7 +176,7 @@ class SiteManager {
           this.sites.forEach((site, index) => {
             // check for updated API version and updated icon
             promises.push(
-              site.ensureLatestApi().then(s => {
+              site.ensureLatestApi().then((s) => {
                 if (s.apiVersion !== this.sites[index].apiVersion) {
                   this.sites[index].apiVersion = s.apiVersion;
                 }
@@ -183,7 +185,7 @@ class SiteManager {
                 }
 
                 this.sites[index].lastChecked = Date.now();
-              }),
+              })
             );
           });
 
@@ -195,7 +197,7 @@ class SiteManager {
                   this._onChange();
                 });
               })
-              .catch(e => {
+              .catch((e) => {
                 console.log(e);
               });
           }
@@ -209,7 +211,7 @@ class SiteManager {
 
   totalUnread() {
     let count = 0;
-    this.sites.forEach(site => {
+    this.sites.forEach((site) => {
       if (site.authToken) {
         count +=
           (site.unreadNotifications || 0) +
@@ -254,31 +256,31 @@ class SiteManager {
     if (now - lastRun >= REFRESH_THROTTLE_MS) {
       this._throttledRefreshSites();
     } else {
-      console.log('no refresh, it was last refreshed too recently');
+      console.log("no refresh, it was last refreshed too recently");
     }
   }
 
   _throttledRefreshSites() {
     this.lastRefresh = new Date();
     console.log(
-      'refreshing ' +
+      "refreshing " +
         this.sites.length +
-        ' sites at ' +
-        this.lastRefresh.toJSON(),
+        " sites at " +
+        this.lastRefresh.toJSON()
     );
 
-    AsyncStorage.setItem('@Discourse.lastRefresh', this.lastRefresh.toJSON());
+    AsyncStorage.setItem("@Discourse.lastRefresh", this.lastRefresh.toJSON());
 
     let sites = this.sites.slice(0);
     let promises = [];
 
     if (sites.length === 0) {
-      console.log('no sites defined, nothing to refresh!');
+      console.log("no sites defined, nothing to refresh!");
       return;
     }
 
     return new Promise((resolve, reject) => {
-      sites.forEach(site => {
+      sites.forEach((site) => {
         if (site.authToken) {
           promises.push(site.refresh());
         }
@@ -289,7 +291,7 @@ class SiteManager {
           this.save();
           resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           reject(e);
         });
     });
@@ -297,11 +299,11 @@ class SiteManager {
 
   async iOSbackgroundRefresh() {
     const results = await Promise.all(
-      this.sites.map(site => site.refresh({bgTask: true})),
+      this.sites.map((site) => site.refresh({ bgTask: true }))
     );
 
     let badgeCount = 0;
-    results.forEach(result => {
+    results.forEach((result) => {
       if (result) {
         badgeCount += result.newTotal;
         // schedule a local notification for sites with no push capability
@@ -310,19 +312,19 @@ class SiteManager {
         // new notification nonetheless...)
         if (!result.hasPush && result.newTotal > result.oldTotal) {
           PushNotificationIOS.scheduleLocalNotification({
-            alertTitle: i18n.t('generic_notification_title', {
+            alertTitle: i18n.t("generic_notification_title", {
               count: result.newTotal - result.oldTotal,
             }),
-            alertBody: i18n.t('generic_notification_body', {
-              url: result.url.replace(/^https?:\/\//, ''),
+            alertBody: i18n.t("generic_notification_body", {
+              url: result.url.replace(/^https?:\/\//, ""),
             }),
-            userInfo: {discourse_url: result.url},
+            userInfo: { discourse_url: result.url },
           });
         }
       }
     });
 
-    PushNotificationIOS.checkPermissions(p => {
+    PushNotificationIOS.checkPermissions((p) => {
       if (p.badge) {
         PushNotificationIOS.setApplicationIconBadgeNumber(badgeCount);
       }
@@ -333,38 +335,38 @@ class SiteManager {
 
   serializeParams(obj) {
     return Object.keys(obj)
-      .map(k => `${encodeURIComponent(k)}=${encodeURIComponent([obj[k]])}`)
-      .join('&');
+      .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent([obj[k]])}`)
+      .join("&");
   }
 
   registerClientId(id) {
-    console.log('REGISTER CLIENT ID ' + id);
+    console.log("REGISTER CLIENT ID " + id);
 
-    this.getClientId().then(existing => {
-      this.sites.forEach(site => {
+    this.getClientId().then((existing) => {
+      this.sites.forEach((site) => {
         site.clientId = id;
       });
 
       if (existing !== id) {
         this.clientId = id;
-        AsyncStorage.setItem('@ClientId', this.clientId);
+        AsyncStorage.setItem("@ClientId", this.clientId);
         this.save();
       }
     });
   }
 
   getClientId() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if (this.clientId) {
         resolve(this.clientId);
       } else {
-        AsyncStorage.getItem('@ClientId').then(clientId => {
+        AsyncStorage.getItem("@ClientId").then((clientId) => {
           if (clientId && clientId.length > 0) {
             this.clientId = clientId;
             resolve(clientId);
           } else {
             this.clientId = randomBytes(32);
-            AsyncStorage.setItem('@ClientId', this.clientId);
+            AsyncStorage.setItem("@ClientId", this.clientId);
             resolve(this.clientId);
           }
         });
@@ -373,7 +375,7 @@ class SiteManager {
   }
 
   generateNonce(site) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._nonce = randomBytes(16);
       this._nonceSite = site;
       resolve(this._nonce);
@@ -390,7 +392,7 @@ class SiteManager {
     let decrypted = JSON.parse(this.decryptHelper(payload));
 
     if (decrypted.nonce !== this._nonce) {
-      Alert.alert('We were not expecting this reply, please try again!');
+      Alert.alert("We were not expecting this reply, please try again!");
       return;
     }
 
@@ -406,8 +408,8 @@ class SiteManager {
       .then(() => {
         this._onChange();
       })
-      .catch(e => {
-        console.log('Failed to refresh ' + this._nonceSite.url + ' ' + e);
+      .catch((e) => {
+        console.log("Failed to refresh " + this._nonceSite.url + " " + e);
       });
   }
 
@@ -416,15 +418,15 @@ class SiteManager {
 
     return this.ensureRSAKeys().then(() =>
       this.getClientId()
-        .then(cid => {
+        .then((cid) => {
           clientId = cid;
           return this.generateNonce(site);
         })
-        .then(nonce => {
-          let basePushUrl = 'https://api.discourse.org';
+        .then((nonce) => {
+          let basePushUrl = "https://api.discourse.org";
           //let basePushUrl = "http://l.discourse:3000"
 
-          let scopes = 'notifications,session_info';
+          let scopes = "notifications,session_info";
 
           if (this.supportsDelegatedAuth(site)) {
             scopes = `${scopes},one_time_password`;
@@ -434,7 +436,7 @@ class SiteManager {
             scopes: scopes,
             client_id: clientId,
             nonce: nonce,
-            push_url: basePushUrl + '/api/publish_' + Platform.OS,
+            push_url: basePushUrl + "/api/publish_" + Platform.OS,
             auth_redirect: this.urlScheme,
             application_name: this.deviceName,
             public_key: this.rsaKeys.public,
@@ -442,18 +444,18 @@ class SiteManager {
           };
 
           return `${site.url}/user-api-key/new?${this.serializeParams(params)}`;
-        }),
+        })
     );
   }
 
-  generateURLParams(site, type = 'basic') {
+  generateURLParams(site, type = "basic") {
     return this.ensureRSAKeys().then(() => {
       let params = {
         auth_redirect: this.urlScheme,
         user_api_public_key: this.rsaKeys.public,
       };
 
-      if (type === 'full') {
+      if (type === "full") {
         params = {
           auth_redirect: this.urlScheme,
           application_name: this.deviceName,
@@ -466,16 +468,16 @@ class SiteManager {
   }
 
   getSeenNotificationMap() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       let promises = [];
       let results = {};
 
-      this.sites.forEach(site => {
+      this.sites.forEach((site) => {
         if (site.authToken) {
           promises.push(
             site.getSeenNotificationId().then(function (id) {
               results[site.url] = id;
-            }),
+            })
           );
         }
       });
@@ -485,41 +487,41 @@ class SiteManager {
   }
 
   notifications(types, options) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       let promises = [];
-      this.sites.forEach(site => {
+      this.sites.forEach((site) => {
         let opts = options;
 
         if (opts.onlyNew) {
-          opts = _.merge(_.clone(opts), {minId: opts.newMap[site.url]});
+          opts = _.merge(_.clone(opts), { minId: opts.newMap[site.url] });
         }
 
-        let promise = site.notifications(types, opts).then(notifications => {
-          return notifications.map(n => {
-            return {notification: n, site: site};
+        let promise = site.notifications(types, opts).then((notifications) => {
+          return notifications.map((n) => {
+            return { notification: n, site: site };
           });
         });
 
         promises.push(promise);
       });
 
-      Promise.all(promises).then(results => {
+      Promise.all(promises).then((results) => {
         resolve(
           _.chain(results)
             .flatten()
             .orderBy(
               [
-                o => {
+                (o) => {
                   return !o.notification.read &&
                     o.notification.notification_type === 6
                     ? 0
                     : 1;
                 },
-                'notification.created_at',
+                "notification.created_at",
               ],
-              ['asc', 'desc'],
+              ["asc", "desc"]
             )
-            .value(),
+            .value()
         );
       });
     });
@@ -530,11 +532,11 @@ class SiteManager {
   }
 
   connectedSitesCount() {
-    return this.sites.filter(site => site.authToken).length;
+    return this.sites.filter((site) => site.authToken).length;
   }
 
   _onChange() {
-    this._subscribers.forEach(sub => sub({event: 'change'}));
+    this._subscribers.forEach((sub) => sub({ event: "change" }));
   }
 
   async refreshActiveSite() {
@@ -552,7 +554,7 @@ class SiteManager {
     // site needs user api >= 4
 
     if (
-      Platform.OS !== 'ios' ||
+      Platform.OS !== "ios" ||
       parseInt(Platform.Version, 10) <= 11 ||
       site.apiVersion < 4
     ) {
@@ -563,8 +565,8 @@ class SiteManager {
   }
 
   urlInSites(url) {
-    let siteUrls = this.sites.map(s => s.url);
-    return siteUrls.find(siteUrl => url.startsWith(siteUrl) === true);
+    let siteUrls = this.sites.map((s) => s.url);
+    return siteUrls.find((siteUrl) => url.startsWith(siteUrl) === true);
   }
 }
 
