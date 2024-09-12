@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   // ActivityIndicator,
   // Modal,
   // Alert,
+  TouchableHighlight,
   Share,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -14,8 +15,21 @@ import { PanResponder } from "react-native";
 import WebViewComponent from "./WebViewScreenComponents";
 import styles from "../styles";
 import { HOME_URL } from "../constants";
+import {ThemeContext} from '../ThemeContext';
+import { I18n } from "i18n-js";
 
-const DiscourseWebScreen = ({ navigation }) => {
+import { translations } from "../shared";
+const i18n = new I18n(translations);
+
+// const { languageTag } = findBestLanguageTag(
+//   Object.keys(i18n.translations)
+// ) || { languageTag: "en", isRTL: false };
+
+// i18n.locale = languageTag;
+// i18n.fallbacks = true;
+
+const DiscourseWebScreen = (props) => {
+  const { navigation, screenProps } = props;
   const [url, setUrl] = useState(HOME_URL);
   const [prev, setPrev] = useState(false);
   const [next, setNext] = useState(false);
@@ -23,6 +37,12 @@ const DiscourseWebScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [currscale, setCurrScale] = useState(1);
   const [zoom, setZoom] = useState(false);
+  const theme = useContext(ThemeContext);
+
+  // 부모로부터 새로운 URL이 전달될 때마다 업데이트
+  useEffect(() => {
+    setUrl(screenProps.url);
+  }, [screenProps.url]);
 
   const isHome = () => {
     return webviewRef.current.url == HOME_URL;
@@ -146,6 +166,21 @@ const DiscourseWebScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <WebViewComponent {...webviewProps} ref={webviewRef} />
+
+      {/* 연결버튼 */}
+      <TouchableHighlight
+        style={styles.notifications}
+        underlayColor={theme.background}
+        onPress={() => screenProps.onClickConnect()}>
+        <Text
+          style={{
+            ...styles.connect,
+            backgroundColor: theme.blueCallToAction,
+            color: theme.buttonTextColor,
+          }}>
+          {i18n.t('connect')}
+        </Text>
+      </TouchableHighlight>
 
       <View style={styles.toolbar}>
         <TouchableOpacity

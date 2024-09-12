@@ -18,6 +18,8 @@
     <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
+        <!-- from DiscourseMobile -->
+        <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
       <intent-filter>
@@ -26,6 +28,30 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="org.centromics.app"/>
       </intent-filter>
+          
+      <!-- from DiscourseMobile -->
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+      <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="discourse" android:host="auth_redirect" />
+      </intent-filter>
+      <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="discourse" android:host="open" />
+      </intent-filter>
+      <intent-filter>
+          <action android:name="open_topic" />
+          <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>
   </application>

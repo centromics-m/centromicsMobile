@@ -42,6 +42,7 @@ class SiteManager {
   }
 
   add(site) {
+    console.log('sitemanager add site', site);
     this.sites.push(site);
     this.save();
     this.updateNativeMenu();
@@ -262,6 +263,7 @@ class SiteManager {
 
   _throttledRefreshSites() {
     this.lastRefresh = new Date();
+    //console.log('sites: ', this.sites);
     console.log(
       "refreshing " +
         this.sites.length +
@@ -487,9 +489,13 @@ class SiteManager {
   }
 
   notifications(types, options) {
+    console.log('notifications: types, options: ', types, options)
     return new Promise((resolve) => {
       let promises = [];
+      let n = 0;
       this.sites.forEach((site) => {
+        console.log('notifications: site: n:', n++, site)
+
         let opts = options;
 
         if (opts.onlyNew) {
@@ -505,7 +511,9 @@ class SiteManager {
         promises.push(promise);
       });
 
+      console.log('promise', promises);
       Promise.all(promises).then((results) => {
+        console.log('results', results);
         resolve(
           _.chain(results)
             .flatten()
@@ -532,6 +540,7 @@ class SiteManager {
   }
 
   connectedSitesCount() {
+    console.log('connectedSitesCount', this.sites);
     return this.sites.filter((site) => site.authToken).length;
   }
 
